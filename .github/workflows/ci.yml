@@ -16,11 +16,18 @@ jobs:
       uses: actions/setup-python@v5
       with:
         python-version: '3.11'
+    - name: Checkout Test Harness
+      uses: actions/checkout@v4
+      with:
+        repository: SamuelMarks/cdd-openapi-test-harness
+        path: cdd-openapi-test-harness
     - name: Install dependencies
       run: |
         pip install uv
         make install_deps
     - name: Run pre-commit hooks
+      env:
+        TEST_HARNESS_DIR: ${{ github.workspace }}/cdd-openapi-test-harness
       run: |
         uv tool install pre-commit --with pre-commit-uv
         pre-commit run --all-files

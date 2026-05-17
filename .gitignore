@@ -170,3 +170,7 @@ celerybeat.pid
 /fix_*.py
 
 /test_pydantic_v1.py
+
+# Pre-commit test directories
+.tmp_swagger/
+.tmp_oas3/
