@@ -169,5 +169,3 @@ celerybeat.pid
 /update_tests*.py
 /fix_*.py
 
-# Scratch numbered tests
-tests/*[0-9].py
