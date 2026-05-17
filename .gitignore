@@ -169,3 +169,4 @@ celerybeat.pid
 /update_tests*.py
 /fix_*.py
 
+/test_pydantic_v1.py
