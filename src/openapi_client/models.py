@@ -16,7 +16,9 @@ class OpenAPIBase(BaseModel):
         )
     else:
 
-        class Config:
+        class Config:  # pragma: no cover
+            """Pydantic config."""
+
             extra = "allow"
             allow_population_by_field_name = True
 

@@ -174,3 +174,5 @@ celerybeat.pid
 # Pre-commit test directories
 .tmp_swagger/
 .tmp_oas3/
+.pytest_cache
+bin
