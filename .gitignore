@@ -159,3 +159,15 @@ celerybeat.pid
 *.lprof
 *.pstats
 *.cprof
+
+# ---------------------------------------------------
+# Custom Scratch and Temporary Files
+# ---------------------------------------------------
+/tmp.txt
+/tmp*.txt
+/update_models.py
+/update_tests*.py
+/fix_*.py
+
+# Scratch numbered tests
+tests/*[0-9].py
