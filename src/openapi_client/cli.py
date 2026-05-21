@@ -175,15 +175,21 @@ packages = ["src"]
         )
 
 
-def scaffold_github_actions(out_dir: Path):
+def scaffold_github_actions(out_dir: Path, tests: bool = False):
     """Scaffold GitHub actions CI file."""
     workflows_dir = out_dir / ".github" / "workflows"
     workflows_dir.mkdir(parents=True, exist_ok=True)
 
     ci_yml = workflows_dir / "ci.yml"
     if not ci_yml.exists():
+        test_step = ""
+        if tests:
+            test_step = """
+      - name: Run tests
+        run: pytest test/"""
+
         ci_yml.write_text(
-            """name: CI
+            f"""name: CI
 on: [push, pull_request]
 
 jobs:
@@ -196,9 +202,7 @@ jobs:
         with:
           python-version: '3.11'
       - name: Install dependencies
-        run: pip install -e .[dev]
-      - name: Run tests
-        run: pytest test/
+        run: pip install -e .[dev]{test_step}
 """,
             encoding="utf-8",
         )
@@ -259,18 +263,18 @@ def process_from_openapi(
                 emit_openapi_json(spec, indent=2), encoding="utf-8"
             )
 
-            # Always emit tests for to_sdk
-            test_dir = out_dir / "test"
-            test_dir.mkdir(parents=True, exist_ok=True)
-            (test_dir / "__init__.py").touch()
-            (test_dir / "test_client.py").write_text(
-                emit_tests(spec, composable=True).code, encoding="utf-8"
-            )
-            from openapi_client.mocks.emit import emit_mock_server
+            if tests:
+                test_dir = out_dir / "test"
+                test_dir.mkdir(parents=True, exist_ok=True)
+                (test_dir / "__init__.py").touch()
+                (test_dir / "test_client.py").write_text(
+                    emit_tests(spec, composable=True).code, encoding="utf-8"
+                )
+                from openapi_client.mocks.emit import emit_mock_server
 
-            (test_dir / "mock_server.py").write_text(
-                emit_mock_server(spec).code, encoding="utf-8"
-            )
+                (test_dir / "mock_server.py").write_text(
+                    emit_mock_server(spec).code, encoding="utf-8"
+                )
         elif subcommand == "to_sdk_cli":
             from openapi_client.classes.emit import emit_models_module
 
@@ -292,6 +296,19 @@ def process_from_openapi(
             from openapi_client.cli_sdk_cdd.emit import emit_cli_sdk
 
             (src_dir / "cli_main.py").write_text(emit_cli_sdk(spec), encoding="utf-8")
+
+            if tests:
+                test_dir = out_dir / "test"
+                test_dir.mkdir(parents=True, exist_ok=True)
+                (test_dir / "__init__.py").touch()
+                (test_dir / "test_client.py").write_text(
+                    emit_tests(spec, composable=True).code, encoding="utf-8"
+                )
+                from openapi_client.mocks.emit import emit_mock_server
+
+                (test_dir / "mock_server.py").write_text(
+                    emit_mock_server(spec).code, encoding="utf-8"
+                )
         elif subcommand == "to_server":
             from openapi_client.fastapi.emit import emit_fastapi
             from openapi_client.sqlalchemy_cdd.emit import emit_sqlalchemy
@@ -311,7 +328,7 @@ def process_from_openapi(
         scaffold_package(out_dir)
 
     if not no_github_actions:
-        scaffold_github_actions(out_dir)
+        scaffold_github_actions(out_dir, tests=tests)
 
     print(f"Successfully generated {subcommand} in {out_dir}")
 

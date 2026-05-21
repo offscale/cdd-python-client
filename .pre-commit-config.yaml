@@ -28,23 +28,19 @@ repos:
     always_run: true
   - id: swagger-2-0-petstore
     name: Swagger 2.0 Petstore Test
-    entry: bash -c "TEST_HARNESS=${TEST_HARNESS_DIR:-/Users/samuel/repos/cdd-openapi-test-harness};
-      uv run cdd-python from_openapi to_sdk_cli -i $TEST_HARNESS/petstore.json -o
-      .tmp_swagger && rm -rf .tmp_swagger"
+    entry: uv run python scripts/run_petstore_test.py petstore.json .tmp_swagger
     language: system
     pass_filenames: false
     always_run: true
   - id: openapi-3-2-0-petstore
     name: OpenAPI 3.2.0 Petstore Test
-    entry: bash -c "TEST_HARNESS=${TEST_HARNESS_DIR:-/Users/samuel/repos/cdd-openapi-test-harness};
-      uv run cdd-python from_openapi to_sdk_cli -i $TEST_HARNESS/petstore_oas3.json
-      -o .tmp_oas3 && rm -rf .tmp_oas3"
+    entry: uv run python scripts/run_petstore_test.py petstore_oas3.json .tmp_oas3
     language: system
     pass_filenames: false
     always_run: true
   - id: build-wasm
     name: Build WASM
-    entry: make build_wasm
+    entry: uv run python scripts/build_wasm.py
     language: system
     pass_filenames: false
     always_run: true

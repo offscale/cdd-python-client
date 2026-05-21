@@ -48,8 +48,7 @@ build:
 
 build_wasm:
 	@echo "Building WASM to bin/"
-	@mkdir -p bin
-	uv run py2wasm src/openapi_client/cli.py -o bin/cdd-python-all.wasm || (echo "WASI build failed. Falling back to Pyodide zip bundle." && rm -f bin/cdd-python-all.wasm && zip -r bin/cdd-python-all.wasm src pyproject.toml)
+	uv run python scripts/build_wasm.py
 test:
 	uv run pytest tests/
 run: build
